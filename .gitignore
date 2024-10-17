@@ -1,0 +1,5 @@
+# Bun dependencies
+node_modules/
+
+# Nx
+.nx/
