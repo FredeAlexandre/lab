@@ -7,6 +7,7 @@ import type * as React from "react";
 // @ts-ignore
 import globals from "@/styles/globals.css?url";
 
+import { ThemeProvider } from "@/components/ui/theme";
 import { seo } from "@/lib/seo";
 
 export const Route = createRootRoute({
@@ -31,7 +32,9 @@ export const Route = createRootRoute({
 function RootComponent() {
 	return (
 		<RootDocument>
-			<Outlet />
+			<ThemeProvider>
+				<Outlet />
+			</ThemeProvider>
 		</RootDocument>
 	);
 }

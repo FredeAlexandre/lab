@@ -5,7 +5,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown, Moon, Plus, Search, Share } from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "@/components/ui/theme";
+import { ChevronDown, Moon, Plus, Search, Share, Sun } from "lucide-react";
 
 export const Route = createFileRoute("/")({
 	component: Home,
@@ -47,13 +54,40 @@ function ReminderSkeleton() {
 	);
 }
 
+export function ModeToggle() {
+	const { setTheme } = useTheme();
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button size="icon" variant="ghost">
+					<Sun className="size-6 text-muted-foreground rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+					<Moon className="absolute size-6 text-muted-foreground rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+					<span className="sr-only">Toggle theme</span>
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end">
+				<DropdownMenuItem onClick={() => setTheme("light")}>
+					Light
+				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => setTheme("dark")}>
+					Dark
+				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => setTheme("system")}>
+					System
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+}
+
 function Home() {
 	return (
 		<div className="flex min-h-screen">
-			<div className="bg-muted w-[26rem] space-y-4">
+			<div className="bg-secondary w-[26rem] space-y-4">
 				<div className="px-4 pt-4">
 					<div className="relative">
-						<Input placeholder="Search" className="bg-background pl-7" />
+						<Input placeholder="Search" className="pl-7" />
 						<Search className="size-4 absolute top-1/2 -translate-y-1/2 left-2 text-muted-foreground" />
 					</div>
 				</div>
@@ -86,9 +120,7 @@ function Home() {
 			</div>
 			<div className="bg-background flex-1 space-y-4">
 				<div className="flex justify-end gap-2 pt-4 px-4">
-					<Button size="icon" variant="ghost">
-						<Moon className="size-6 text-muted-foreground" />
-					</Button>
+					<ModeToggle />
 					<Button size="icon" variant="ghost">
 						<Share className="size-6 text-muted-foreground" />
 					</Button>
