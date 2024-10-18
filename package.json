@@ -1,10 +1,8 @@
 {
 	"name": "lab",
-	"workspaces": [
-		"projects/*",
-		"packages/*"
-	],
+	"workspaces": ["projects/*", "packages/*"],
 	"scripts": {
+		"dev:faire": "nx dev faire",
 		"lint": "biome check --write",
 		"lint:ws": "sherif --fix"
 	},

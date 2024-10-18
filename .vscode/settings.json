@@ -1,6 +1,3 @@
 {
-	"conventionalCommits.scopes": [
-		"repository",
-		"faire"
-	]
+	"conventionalCommits.scopes": ["repository", "faire"]
 }
