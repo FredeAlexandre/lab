@@ -14,6 +14,10 @@ import {
 import { useTheme } from "@/components/ui/theme";
 import { ChevronDown, Moon, Plus, Search, Share, Sun } from "lucide-react";
 
+import { useFocus } from "@/hooks/use-focus";
+import { useRemindersStore } from "@/stores/reminders";
+import { useEffect, useMemo, useState } from "react";
+
 export const Route = createFileRoute("/")({
 	component: Home,
 });
@@ -81,6 +85,97 @@ export function ModeToggle() {
 	);
 }
 
+function AddReminderButton() {
+	const { addReminder, generateReminderId } = useRemindersStore();
+
+	return (
+		<Button
+			size="icon"
+			variant="ghost"
+			onClick={() => {
+				addReminder({
+					id: generateReminderId(),
+					title: "",
+					checked: false,
+				});
+			}}
+		>
+			<Plus className="size-6 text-muted-foreground" />
+		</Button>
+	);
+}
+
+function ReminderEditorMode({ id }: { id: string }) {
+	const { clearEmptyReminders, reminders, updateReminder } =
+		useRemindersStore();
+
+	const [hasBeenFocused, setHasBeenFocused] = useState(false);
+
+	const reminder = useMemo(() => reminders.get(id), [reminders, id]);
+	if (!reminder) throw new Error("Reminder not found");
+
+	const [title, setTitle] = useState(reminder.title);
+	const { ref, setFocus, isFocused } = useFocus<HTMLInputElement>();
+
+	useEffect(() => {
+		setFocus();
+	}, [setFocus]);
+
+	useEffect(() => {
+		if (isFocused) {
+			setHasBeenFocused(true);
+		}
+	}, [isFocused]);
+
+	useEffect(() => {
+		if (hasBeenFocused && !isFocused) {
+			updateReminder(id, { title });
+			clearEmptyReminders();
+		}
+	}, [
+		isFocused,
+		clearEmptyReminders,
+		updateReminder,
+		id,
+		title,
+		hasBeenFocused,
+	]);
+
+	return (
+		<div className="pl-4 flex gap-2 items-center">
+			<Checkbox className="size-6 rounded-full border-border data-[state=checked]:border-primary shadow-none" />
+			<div className="w-full">
+				<Input
+					ref={ref}
+					value={title}
+					onChange={(e) => {
+						setTitle(e.target.value);
+					}}
+					className="w-full border-0 focus-visible:ring-0 h-full p-0"
+				/>
+				<hr className="translate-y-2 w-full" />
+			</div>
+		</div>
+	);
+}
+
+function Reminders() {
+	const { reminders } = useRemindersStore();
+
+	const remindersArray = useMemo(
+		() => Array.from(reminders.values()),
+		[reminders],
+	);
+
+	return (
+		<>
+			{remindersArray.map((reminder) => (
+				<ReminderEditorMode id={reminder.id} key={reminder.id} />
+			))}
+		</>
+	);
+}
+
 function Home() {
 	return (
 		<div className="flex min-h-screen">
@@ -124,18 +219,13 @@ function Home() {
 					<Button size="icon" variant="ghost">
 						<Share className="size-6 text-muted-foreground" />
 					</Button>
-					<Button size="icon" variant="ghost">
-						<Plus className="size-6 text-muted-foreground" />
-					</Button>
+					<AddReminderButton />
 				</div>
 				<div className="px-4 flex justify-between">
 					<Skeleton className="w-[300px] h-[50px]" />
 					<Skeleton className="w-[40px] h-[50px]" />
 				</div>
-				<ReminderSkeleton />
-				<ReminderSkeleton />
-				<ReminderSkeleton />
-				<ReminderSkeleton />
+				<Reminders />
 			</div>
 		</div>
 	);
