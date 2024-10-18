@@ -5,7 +5,7 @@ import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
 import type * as React from "react";
 
 // @ts-ignore
-import appCss from "@/styles/globals.css?url";
+import globals from "@/styles/globals.css?url";
 
 import { seo } from "@/lib/seo";
 
@@ -24,7 +24,7 @@ export const Route = createRootRoute({
 				"Faire is a reminder app that works on all platforms. It's simple, fast, and easy to use.",
 		}),
 	],
-	links: () => [{ rel: "stylesheet", href: appCss }],
+	links: () => [{ rel: "stylesheet", href: globals }],
 	component: RootComponent,
 });
 
